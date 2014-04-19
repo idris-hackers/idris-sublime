@@ -7,7 +7,7 @@ uuid: 8957eeb1-b492-4497-85b8-b86e511e87eb
 patterns:
 - comment: Infix function application
   name: keyword.operator.function.infix.idris
-  match: (`)[a-zA-Z_']*?(`)
+  match: (`)[\w']*?(`)
   captures:
     '1': {name: punctuation.definition.entity.idris}
     '2': {name: punctuation.definition.entity.idris}
@@ -24,49 +24,6 @@ patterns:
     '1': {name: keyword.other.idris}
     # '2': {name: support.other.module.idris}
 
-- name: meta.declaration.class.idris
-  begin: \b(class)\b
-  beginCaptures:
-    '1': {name: keyword.other.idris}
-  end: \b(where)\b|$
-  endCaptures:
-    '1': {name: keyword.other.idris}
-  # patterns:
-  # - include: '#prelude_class'
-  # - name: entity.other.inherited-class.idris
-  #   match: "[A-Z][A-Za-z_']*"
-  # - name: variable.other.generic-type.idris
-  #   match: \b[a-z][a-zA-Z0-9_']*\b
-
-- name: meta.declaration.instance.idris
-  begin: \b(instance)\b
-  beginCaptures:
-    '1': {name: keyword.other.idris}
-  end: \b(where)\b|$
-  endCaptures:
-    '1': {name: keyword.other.idris}
-  patterns:
-  - include: '#type_signature'
-
-- include: '#directive'
-- include: '#prelude_class'
-- include: '#prelude_type'
-- include: '#prelude_function'
-- include: '#comments'
-- include: '#infix_op'
-- include: '#language_const'
-
-- name: keyword.other.idris
-  match: \b(infix[lr]?|data|type|let|newtype|default|auto)\b
-  comment: I'm not sure that these are all keywords, but don't know where to check it
-
-- name: keyword.operator.idris
-  match: \b(where|of|in|with)\b
-  comment: Maybe these keywords should be in the operator scope
-
-- name: keyword.control.idris
-  match: \b(do|if|then|else|case)\b
-
 - name: constant.numeric.float.idris
   match: \b([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\b
 
@@ -79,18 +36,21 @@ patterns:
 - name: storage.modifier.totality.idris
   match: \b(total|partial)\b
 
+- name: storage.modifier.idris
+  match: ^\b(implicit)\b
+
 - name: string.quoted.double.idris
-  begin: '"'
+  begin: \"
   beginCaptures:
     '0': {name: punctuation.definition.string.begin.idris}
-  end: '"'
+  end: \"
   endCaptures:
     '0': {name: punctuation.definition.string.end.idris}
   patterns:
   - include: '#escape_characters'
 
 - name: string.quoted.single.idris
-  begin: \'
+  begin: (?<!\w)\'
   beginCaptures:
     '0': {name: punctuation.definition.string.begin.idris}
   end: \'
@@ -98,33 +58,128 @@ patterns:
     '0': {name: punctuation.definition.string.end.idris}
   patterns:
   - include: '#escape_characters'
+  - name: invalid.illegal.idris
+    match: \n
 
-- name: meta.function.type-declaration.idris
-  begin: ^\s*([a-zA-Z0-9_']+|\([|!%$+\-.,=</>]+\))\s*(:)
+- name: meta.declaration.class.idris
+  begin: \b(class)\b
   beginCaptures:
-    '1': {name: entity.name.function.idris}
-    '2': {name: keyword.operator.colon.idris}
-  end: ($|;)
+    '1': {name: keyword.other.idris}
+  end: \b(where)\b|$
+  endCaptures:
+    '1': {name: keyword.other.idris}
+  patterns:
+  - include: '#prelude_class'
+
+- name: meta.declaration.instance.idris
+  begin: \b(instance)\b
+  beginCaptures:
+    '1': {name: keyword.other.idris}
+  end: \b(where)\b|$
+  endCaptures:
+    '1': {name: keyword.other.idris}
+  patterns:
+  # - include: '#context_signature'
+  - include: '#prelude_class'
+
+- name: meta.declaration.data.idris
+  begin: \b(data)\s+([\w']+)\s*(:)
+  beginCaptures:
+    '1': {name: keyword.other.idris}
+    # '2': {name: entity.name.type.idris}
+    '2': {name: storage.type.idris}
+    '3': {name: keyword.operator.colon.idris}
+  end: \b(where)\b|=|$
+  endCaptures:
+    '1': {name: keyword.other.idris}
   patterns:
   - include: '#type_signature'
 
-# - name: support.constant.idris
-#   match: \b(Just|Nothing|Left|Right|True|False|LT|EQ|GT|\(\)|\[\])\b
+- include: '#function_signature'
+- include: '#directive'
+- include: '#comments'
+- include: '#language_const'
+- include: '#language_keyword'
 
 - name: constant.other.idris
   match: \b[A-Z][A-Za-z_'0-9]*
 
 - name: keyword.operator.idris
-  match: '[|!%$?~+:\-.=</>\\]+'
-  comment: In case this regex seems overly general, note that Haskell permits the
-    definition of new operators which can be nearly any string of punctuation characters,
-    such as $%^&*.
+  match: '[|!%$?~+:\-.=</>\\*]+'
 
 - name: punctuation.separator.comma.idris
   match: ','
 
 
+
 repository:
+
+  context_signature:
+    name: meta.context-signature.idris
+    comment: For things like '(Eq a, Show b) =>'
+      It begins with '(' either followed by ') =>' on the same line,
+      or anything but ')' until the end of line
+    begin: (\()((?=.*\)\s*=>)|(?=[^)]*$))
+    beginCaptures:
+      '1': {name: punctuation.context.begin.idris}
+    end: (\))\s*(=>)
+    endCaptures:
+      '1': {name: punctuation.context.end.idris}
+      '2': {name: keyword.operator.big-arrow.idris}
+    patterns:
+    - include: '#prelude_class'
+    - name: meta.class-constraint.idris
+      match: ([\w']+)\s+([\w']+)
+      captures:
+        '1': {name: entity.other.inherited-class.idris}
+        '2': {name: entity.other.attribute-name.idris}
+
+  parameter_type:
+    comment: Parameter types in a type signature
+    patterns:
+    - include: '#prelude_type'
+    - name: meta.parameter.named.idris
+      comment: '(x : Nat)'
+      begin: \(([\w']+)\s*:(?!:)
+      beginCaptures:
+        '1': {name: entity.name.tag.idris}
+      end: \)
+      patterns:
+      - include: '#prelude_type'
+    - name: meta.parameter.implicit.idris
+      comment: '{auto p : a = b}'
+      begin: \{((auto|default .+)\s+)?([\w']+)\s*:(?!:)
+      beginCaptures:
+        '1': {name: storage.modifier.idris}
+        '3': {name: entity.name.tag.idris}
+      end: \}
+      patterns:
+      - include: '#prelude_type'
+
+  type_signature:
+    patterns:
+    - include: '#context_signature'
+    - include: '#parameter_type'
+    - include: '#language_const'
+    - name: keyword.operator.arrow.idris
+      match: ->
+
+  function_signature:
+    name: meta.function.type-signature.idris
+    begin: (([\w']+)|\(([|!%$+\-.,=</>:]+)\))\s*(:)(?!:)
+    beginCaptures:
+      '2': {name: entity.name.function.idris}
+      '3': {name: entity.name.function.idris}
+      '4': {name: keyword.operator.colon.idris}
+    end: (;|(?<=[^\s>])\s*(?!->)\s*$)
+    endCaptures:
+      '0': {name: END}
+    patterns:
+    - include: '#type_signature'
+    comment: The end patterm is a bit tricky. It's either ';' or something, at the end of the line, 
+      but not '->', because a type signature can be multiline. Though, it doesn't help, if you 
+      break the signature before arrows.
+
   block_comment:
     name: comment.block.idris
     begin: \{-(?!#)
@@ -133,7 +188,6 @@ repository:
       '0': {name: punctuation.definition.comment.idris}
     patterns:
     - include: '#block_comment'
-    # applyEndPatternLast: 1
 
   comments:
     patterns:
@@ -151,14 +205,22 @@ repository:
     patterns:
     - name: constant.language.unit.idris
       match: \(\)
-    - name: constant.language.empty-list.idris
-      match: \[\]
+    # - name: constant.language.empty-list.idris
+    #   match: \[\]
     - name: constant.language.bottom.idris
       match: _\|_
+    - name: constant.language.underscore.idris
+      match: \b_\b
 
-  infix_op:
-    name: entity.name.function.infix.idris
-    match: (\([|!%$+:\-.=</>]+\)|\(,+\))
+  language_keyword:
+    patterns:
+    - name: keyword.other.idris
+      match: \b(infix[lr]?|let|where|of|with)\b
+      comment: I'm not sure that these are all keywords, but don't know where to check it
+    # - name: keyword.operator.idris
+    #   match: \b()\b
+    - name: keyword.control.idris
+      match: \b(do|if|then|else|case|in)\b
 
   prelude_class:
     name: support.class.prelude.idris
@@ -166,12 +228,18 @@ repository:
 
   prelude_type:
     name: support.type.prelude.idris
-    match: \b(Int(eger)?|Maybe|Either|Bool|Float|Double|Char|String|Ordering|ShowS|ReadS|FilePath|IO(Error)?)\b
+    match: \b(Int(eger)?|Maybe|Either|Bool|Float|Double|Char|String|Ordering|ShowS|ReadS|FilePath|IO(Error)?|Type|Nat|Vect|List)\b
+    comment: TODO review it
 
   prelude_function:
     name: support.function.prelude.idris
     match: \b(abs|acos|acosh|all|and|any|appendFile|applyM|asTypeOf|asin|asinh|atan|atan2|atanh|break|catch|ceiling|compare|concat|concatMap|const|cos|cosh|curry|cycle|decodeFloat|div|divMod|drop|dropWhile|elem|encodeFloat|enumFrom|enumFromThen|enumFromThenTo|enumFromTo|error|even|exp|exponent|fail|filter|flip|floatDigits|floatRadix|floatRange|floor|fmap|foldl|foldl1|foldr|foldr1|fromEnum|fromInteger|fromIntegral|fromRational|fst|gcd|getChar|getContents|getLine|head|id|init|interact|ioError|isDenormalized|isIEEE|isInfinite|isNaN|isNegativeZero|iterate|last|lcm|length|lex|lines|log|logBase|lookup|map|mapM|mapM_|max|maxBound|maximum|maybe|min|minBound|minimum|mod|negate|not|notElem|null|odd|or|otherwise|pi|pred|print|product|properFraction|putChar|putStr|putStrLn|quot|quotRem|read|readFile|readIO|readList|readLn|readParen|reads|readsPrec|realToFrac|recip|rem|repeat|replicate|return|reverse|round|scaleFloat|scanl|scanl1|scanr|scanr1|seq|sequence|sequence_|show|showChar|showList|showParen|showString|shows|showsPrec|significand|signum|sin|sinh|snd|span|splitAt|sqrt|subtract|succ|sum|tail|take|takeWhile|tan|tanh|toEnum|toInteger|toRational|truncate|uncurry|undefined|unlines|until|unwords|unzip|unzip3|userError|words|writeFile|zip|zip3|zipWith|zipWith3)\b
-    comment: TODO review it; these are Haskell prelude functions
+    comment: TODO review it; these are just Haskell prelude functions
+
+  prelude_const:
+    patterns:
+    - name: support.constant.prelude.idris
+      match: \b(Just|Nothing|Left|Right|True|False|LT|EQ|GT)\b
 
   directive:
     patterns:
@@ -189,64 +257,16 @@ repository:
       match: ^%(provide)\s+.*\s+(with)\s+.*$
       captures:
         '1': {name: keyword.other.directive.idris}
-        '2': {name: keyword.operator.idris}
-    - name: meta.directive.idris
-      match: ^%(unqualified)$
-      captures:
-        '1': {name: keyword.other.directive.idris}
+        '2': {name: keyword.other.idris}
     - name: meta.directive.export.idris
       match: ^%(access)\s+(public|abstract|private)$
       captures:
         '1': {name: keyword.other.directive.idris}
         '2': {name: storage.modifier.export.idris}
-
-  class_constraint:
-    patterns:
-    - include: '#prelude_class'
-    - name: meta.class-constraint.idris
-      match: ([a-zA-Z0-9_.']+)\s+([a-zA-Z0-9_']+)
+    - name: meta.directive.idris
+      match: ^%([\w]+)\b
       captures:
-        '1': {name: entity.other.inherited-class.idris}
-        '2': {name: entity.other.attribute-name.idris}
-
-  context_signature:
-    patterns:
-    - name: meta.context-signature.idris
-      begin: \(
-      beginCaptures:
-        '0': {name: punctuation.definition.context.begin.idris}
-      end: (\))\s*(=>)
-      endCaptures:
-        '1': {name: punctuation.definition.context.end.idris}
-        '2': {name: keyword.operator.big-arrow.idris}
-      # match: \(\s*([A-Z][A-Za-z]*)\s+([a-z][A-Za-z_']*)\)\s*(=>)
-      patterns:
-      - include: '#class_constraint'
-
-  parameter_type:
-    patterns:
-    - include: '#prelude_type'
-    - name: meta.parameter.named.idris
-      match: \(([a-zA-Z_'])\s*:(.+)\)
-      captures:
-        '1': {name: variable.parameter.name.idris}
-    - name: variable.parameter.named.implicit.idris
-      match: \{(auto|default)?([a-zA-Z_'])\s*:(.+)\}
-      captures:
-        '1': {name: storage.modifier.idris}
-        '2': {name: variable.parameter.name.idris}
-
-  type_signature:
-    patterns:
-    # - include: '#context_signature'
-    - include: '#parameter_type'
-    - name: keyword.operator.arrow.idris
-      match: ->
-    # - name: variable.other.generic-type.idris
-    #   match: \b[a-zA-Z0-9_']+\b
-    # - name: storage.type.idris
-    #   match: \b[A-Z][a-zA-Z0-9_']*\b
-    # - include: '#comments'
+        '1': {name: keyword.other.directive.idris}
 
   escape_characters:
     patterns: 
@@ -257,4 +277,4 @@ repository:
     - name: constant.character.escape.control.idris
       match: \^[A-Z@\[\]\\\^_]
 
-# TODO: namespace, parameters, data decl.
+# TODO: namespace, parameters, using, %elim, %name, implicit

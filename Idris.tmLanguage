@@ -27,7 +27,7 @@
 			<key>comment</key>
 			<string>Infix function application</string>
 			<key>match</key>
-			<string>(`)[a-zA-Z_']*?(`)</string>
+			<string>(`)[\w']*?(`)</string>
 			<key>name</key>
 			<string>keyword.operator.function.infix.idris</string>
 		</dict>
@@ -60,6 +60,104 @@
 			<string>meta.import.idris</string>
 		</dict>
 		<dict>
+			<key>match</key>
+			<string>\b([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\b</string>
+			<key>name</key>
+			<string>constant.numeric.float.idris</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\b([0-9]+|0([xX][0-9a-fA-F]+|[oO][0-7]+))\b</string>
+			<key>name</key>
+			<string>constant.numeric.idris</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>^\b(public|abstract|private)\b</string>
+			<key>name</key>
+			<string>storage.modifier.export.idris</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\b(total|partial)\b</string>
+			<key>name</key>
+			<string>storage.modifier.totality.idris</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>^\b(implicit)\b</string>
+			<key>name</key>
+			<string>storage.modifier.idris</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>\"</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.begin.idris</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>\"</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.end.idris</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>string.quoted.double.idris</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#escape_characters</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>(?&lt;!\w)\'</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.begin.idris</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>\'</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.end.idris</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>string.quoted.single.idris</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#escape_characters</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\n</string>
+					<key>name</key>
+					<string>invalid.illegal.idris</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>begin</key>
 			<string>\b(class)\b</string>
 			<key>beginCaptures</key>
@@ -82,6 +180,13 @@
 			</dict>
 			<key>name</key>
 			<string>meta.declaration.class.idris</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#prelude_class</string>
+				</dict>
+			</array>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -110,9 +215,54 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#prelude_class</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>\b(data)\s+([\w']+)\s*(:)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.idris</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>storage.type.idris</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.colon.idris</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>\b(where)\b|=|$</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.other.idris</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>meta.declaration.data.idris</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
 					<string>#type_signature</string>
 				</dict>
 			</array>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#function_signature</string>
 		</dict>
 		<dict>
 			<key>include</key>
@@ -120,163 +270,15 @@
 		</dict>
 		<dict>
 			<key>include</key>
-			<string>#prelude_class</string>
-		</dict>
-		<dict>
-			<key>include</key>
-			<string>#prelude_type</string>
-		</dict>
-		<dict>
-			<key>include</key>
-			<string>#prelude_function</string>
-		</dict>
-		<dict>
-			<key>include</key>
 			<string>#comments</string>
-		</dict>
-		<dict>
-			<key>include</key>
-			<string>#infix_op</string>
 		</dict>
 		<dict>
 			<key>include</key>
 			<string>#language_const</string>
 		</dict>
 		<dict>
-			<key>comment</key>
-			<string>I'm not sure that these are all keywords, but don't know where to check it</string>
-			<key>match</key>
-			<string>\b(infix[lr]?|data|type|let|newtype|default|auto)\b</string>
-			<key>name</key>
-			<string>keyword.other.idris</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>Maybe these keywords should be in the operator scope</string>
-			<key>match</key>
-			<string>\b(where|of|in|with)\b</string>
-			<key>name</key>
-			<string>keyword.operator.idris</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b(do|if|then|else|case)\b</string>
-			<key>name</key>
-			<string>keyword.control.idris</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\b</string>
-			<key>name</key>
-			<string>constant.numeric.float.idris</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b([0-9]+|0([xX][0-9a-fA-F]+|[oO][0-7]+))\b</string>
-			<key>name</key>
-			<string>constant.numeric.idris</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>^\b(public|abstract|private)\b</string>
-			<key>name</key>
-			<string>storage.modifier.export.idris</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b(total|partial)\b</string>
-			<key>name</key>
-			<string>storage.modifier.totality.idris</string>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>"</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.begin.idris</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>"</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.end.idris</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>string.quoted.double.idris</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#escape_characters</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>\'</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.begin.idris</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>\'</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.definition.string.end.idris</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>string.quoted.single.idris</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#escape_characters</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
-			<key>begin</key>
-			<string>^\s*([a-zA-Z0-9_']+|\([|!%$+\-.,=&lt;/&gt;]+\))\s*(:)</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.function.idris</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>keyword.operator.colon.idris</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>($|;)</string>
-			<key>name</key>
-			<string>meta.function.type-declaration.idris</string>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#type_signature</string>
-				</dict>
-			</array>
+			<key>include</key>
+			<string>#language_keyword</string>
 		</dict>
 		<dict>
 			<key>match</key>
@@ -285,10 +287,8 @@
 			<string>constant.other.idris</string>
 		</dict>
 		<dict>
-			<key>comment</key>
-			<string>In case this regex seems overly general, note that Haskell permits the definition of new operators which can be nearly any string of punctuation characters, such as $%^&amp;*.</string>
 			<key>match</key>
-			<string>[|!%$?~+:\-.=&lt;/&gt;\\]+</string>
+			<string>[|!%$?~+:\-.=&lt;/&gt;\\*]+</string>
 			<key>name</key>
 			<string>keyword.operator.idris</string>
 		</dict>
@@ -322,35 +322,6 @@
 				<dict>
 					<key>include</key>
 					<string>#block_comment</string>
-				</dict>
-			</array>
-		</dict>
-		<key>class_constraint</key>
-		<dict>
-			<key>patterns</key>
-			<array>
-				<dict>
-					<key>include</key>
-					<string>#prelude_class</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>entity.other.inherited-class.idris</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>entity.other.attribute-name.idris</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>([a-zA-Z0-9_.']+)\s+([a-zA-Z0-9_']+)</string>
-					<key>name</key>
-					<string>meta.class-constraint.idris</string>
 				</dict>
 			</array>
 		</dict>
@@ -394,43 +365,59 @@
 		</dict>
 		<key>context_signature</key>
 		<dict>
+			<key>begin</key>
+			<string>(\()((?=.*\)\s*=&gt;)|(?=[^)]*$))</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.context.begin.idris</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>For things like '(Eq a, Show b) =&gt;' It begins with '(' either followed by ') =&gt;' on the same line, or anything but ')' until the end of line</string>
+			<key>end</key>
+			<string>(\))\s*(=&gt;)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.context.end.idris</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.big-arrow.idris</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>meta.context-signature.idris</string>
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>begin</key>
-					<string>\(</string>
-					<key>beginCaptures</key>
-					<dict>
-						<key>0</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition.context.begin.idris</string>
-						</dict>
-					</dict>
-					<key>end</key>
-					<string>(\))\s*(=&gt;)</string>
-					<key>endCaptures</key>
+					<key>include</key>
+					<string>#prelude_class</string>
+				</dict>
+				<dict>
+					<key>captures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.context.end.idris</string>
+							<string>entity.other.inherited-class.idris</string>
 						</dict>
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.big-arrow.idris</string>
+							<string>entity.other.attribute-name.idris</string>
 						</dict>
 					</dict>
+					<key>match</key>
+					<string>([\w']+)\s+([\w']+)</string>
 					<key>name</key>
-					<string>meta.context-signature.idris</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>#class_constraint</string>
-						</dict>
-					</array>
+					<string>meta.class-constraint.idris</string>
 				</dict>
 			</array>
 		</dict>
@@ -487,27 +474,13 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.operator.idris</string>
+							<string>keyword.other.idris</string>
 						</dict>
 					</dict>
 					<key>match</key>
 					<string>^%(provide)\s+.*\s+(with)\s+.*$</string>
 					<key>name</key>
 					<string>meta.directive.type-provider.idris</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>keyword.other.directive.idris</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>^%(unqualified)$</string>
-					<key>name</key>
-					<string>meta.directive.idris</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -527,6 +500,20 @@
 					<string>^%(access)\s+(public|abstract|private)$</string>
 					<key>name</key>
 					<string>meta.directive.export.idris</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.other.directive.idris</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>^%([\w]+)\b</string>
+					<key>name</key>
+					<string>meta.directive.idris</string>
 				</dict>
 			</array>
 		</dict>
@@ -554,12 +541,49 @@
 				</dict>
 			</array>
 		</dict>
-		<key>infix_op</key>
+		<key>function_signature</key>
 		<dict>
-			<key>match</key>
-			<string>(\([|!%$+:\-.=&lt;/&gt;]+\)|\(,+\))</string>
+			<key>begin</key>
+			<string>(([\w']+)|\(([|!%$+\-.,=&lt;/&gt;:]+)\))\s*(:)(?!:)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.function.idris</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.function.idris</string>
+				</dict>
+				<key>4</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.colon.idris</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>The end patterm is a bit tricky. It's either ';' or something, at the end of the line, but not '-&gt;', because a type signature can be multiline. Though, it doesn't help, if you break the signature before arrows.</string>
+			<key>end</key>
+			<string>(;|(?&lt;=[^\s&gt;])\s*(?!-&gt;)\s*$)</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>END</string>
+				</dict>
+			</dict>
 			<key>name</key>
-			<string>entity.name.function.infix.idris</string>
+			<string>meta.function.type-signature.idris</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#type_signature</string>
+				</dict>
+			</array>
 		</dict>
 		<key>language_const</key>
 		<dict>
@@ -573,20 +597,42 @@
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>\[\]</string>
-					<key>name</key>
-					<string>constant.language.empty-list.idris</string>
-				</dict>
-				<dict>
-					<key>match</key>
 					<string>_\|_</string>
 					<key>name</key>
 					<string>constant.language.bottom.idris</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b_\b</string>
+					<key>name</key>
+					<string>constant.language.underscore.idris</string>
+				</dict>
+			</array>
+		</dict>
+		<key>language_keyword</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>comment</key>
+					<string>I'm not sure that these are all keywords, but don't know where to check it</string>
+					<key>match</key>
+					<string>\b(infix[lr]?|let|where|of|with)\b</string>
+					<key>name</key>
+					<string>keyword.other.idris</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\b(do|if|then|else|case|in)\b</string>
+					<key>name</key>
+					<string>keyword.control.idris</string>
 				</dict>
 			</array>
 		</dict>
 		<key>parameter_type</key>
 		<dict>
+			<key>comment</key>
+			<string>Parameter types in a type signature</string>
 			<key>patterns</key>
 			<array>
 				<dict>
@@ -594,37 +640,59 @@
 					<string>#prelude_type</string>
 				</dict>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>\(([\w']+)\s*:(?!:)</string>
+					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>variable.parameter.name.idris</string>
+							<string>entity.name.tag.idris</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>\(([a-zA-Z_'])\s*:(.+)\)</string>
+					<key>comment</key>
+					<string>(x : Nat)</string>
+					<key>end</key>
+					<string>\)</string>
 					<key>name</key>
 					<string>meta.parameter.named.idris</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#prelude_type</string>
+						</dict>
+					</array>
 				</dict>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>\{((auto|default .+)\s+)?([\w']+)\s*:(?!:)</string>
+					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
 							<string>storage.modifier.idris</string>
 						</dict>
-						<key>2</key>
+						<key>3</key>
 						<dict>
 							<key>name</key>
-							<string>variable.parameter.name.idris</string>
+							<string>entity.name.tag.idris</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>\{(auto|default)?([a-zA-Z_'])\s*:(.+)\}</string>
+					<key>comment</key>
+					<string>{auto p : a = b}</string>
+					<key>end</key>
+					<string>\}</string>
 					<key>name</key>
-					<string>variable.parameter.named.implicit.idris</string>
+					<string>meta.parameter.implicit.idris</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#prelude_type</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
@@ -635,10 +703,22 @@
 			<key>name</key>
 			<string>support.class.prelude.idris</string>
 		</dict>
+		<key>prelude_const</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\b(Just|Nothing|Left|Right|True|False|LT|EQ|GT)\b</string>
+					<key>name</key>
+					<string>support.constant.prelude.idris</string>
+				</dict>
+			</array>
+		</dict>
 		<key>prelude_function</key>
 		<dict>
 			<key>comment</key>
-			<string>TODO review it; these are Haskell prelude functions</string>
+			<string>TODO review it; these are just Haskell prelude functions</string>
 			<key>match</key>
 			<string>\b(abs|acos|acosh|all|and|any|appendFile|applyM|asTypeOf|asin|asinh|atan|atan2|atanh|break|catch|ceiling|compare|concat|concatMap|const|cos|cosh|curry|cycle|decodeFloat|div|divMod|drop|dropWhile|elem|encodeFloat|enumFrom|enumFromThen|enumFromThenTo|enumFromTo|error|even|exp|exponent|fail|filter|flip|floatDigits|floatRadix|floatRange|floor|fmap|foldl|foldl1|foldr|foldr1|fromEnum|fromInteger|fromIntegral|fromRational|fst|gcd|getChar|getContents|getLine|head|id|init|interact|ioError|isDenormalized|isIEEE|isInfinite|isNaN|isNegativeZero|iterate|last|lcm|length|lex|lines|log|logBase|lookup|map|mapM|mapM_|max|maxBound|maximum|maybe|min|minBound|minimum|mod|negate|not|notElem|null|odd|or|otherwise|pi|pred|print|product|properFraction|putChar|putStr|putStrLn|quot|quotRem|read|readFile|readIO|readList|readLn|readParen|reads|readsPrec|realToFrac|recip|rem|repeat|replicate|return|reverse|round|scaleFloat|scanl|scanl1|scanr|scanr1|seq|sequence|sequence_|show|showChar|showList|showParen|showString|shows|showsPrec|significand|signum|sin|sinh|snd|span|splitAt|sqrt|subtract|succ|sum|tail|take|takeWhile|tan|tanh|toEnum|toInteger|toRational|truncate|uncurry|undefined|unlines|until|unwords|unzip|unzip3|userError|words|writeFile|zip|zip3|zipWith|zipWith3)\b</string>
 			<key>name</key>
@@ -646,8 +726,10 @@
 		</dict>
 		<key>prelude_type</key>
 		<dict>
+			<key>comment</key>
+			<string>TODO review it</string>
 			<key>match</key>
-			<string>\b(Int(eger)?|Maybe|Either|Bool|Float|Double|Char|String|Ordering|ShowS|ReadS|FilePath|IO(Error)?)\b</string>
+			<string>\b(Int(eger)?|Maybe|Either|Bool|Float|Double|Char|String|Ordering|ShowS|ReadS|FilePath|IO(Error)?|Type|Nat|Vect|List)\b</string>
 			<key>name</key>
 			<string>support.type.prelude.idris</string>
 		</dict>
@@ -657,7 +739,15 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#context_signature</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#parameter_type</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#language_const</string>
 				</dict>
 				<dict>
 					<key>match</key>
