@@ -225,6 +225,14 @@
 					<key>include</key>
 					<string>#prelude_type</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#context_signature</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#type_signature</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -305,7 +313,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>[|!%$?~+:\-.=&lt;/&gt;\\*]+</string>
+			<string>[|&amp;!%$?~+:\-.=&lt;/&gt;\\*]+</string>
 			<key>name</key>
 			<string>keyword.operator.idris</string>
 		</dict>
@@ -382,41 +390,8 @@
 		</dict>
 		<key>context_signature</key>
 		<dict>
-			<key>begin</key>
-			<string>(\()((?=.*\)\s*=&gt;)|(?=[^)]*$))</string>
-			<key>beginCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.context.begin.idris</string>
-				</dict>
-			</dict>
-			<key>comment</key>
-			<string>For things like '(Eq a, Show b) =&gt;' It begins with '(' either followed by ') =&gt;' on the same line, or anything but ')' until the end of line</string>
-			<key>end</key>
-			<string>(\))\s*(=&gt;)</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.context.end.idris</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
-					<string>keyword.operator.big-arrow.idris</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>meta.context-signature.idris</string>
 			<key>patterns</key>
 			<array>
-				<dict>
-					<key>include</key>
-					<string>#prelude_class</string>
-				</dict>
 				<dict>
 					<key>captures</key>
 					<dict>
@@ -430,11 +405,69 @@
 							<key>name</key>
 							<string>entity.other.attribute-name.idris</string>
 						</dict>
+						<key>4</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.double-arrow.idris</string>
+						</dict>
 					</dict>
 					<key>match</key>
-					<string>([\w']+)\s+([\w']+)</string>
+					<string>([\w._']+)((\s+[\w_']+)+)\s*(=&gt;)</string>
 					<key>name</key>
-					<string>meta.class-constraint.idris</string>
+					<string>meta.context-signature.idris</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(\()((?=.*\)\s*=&gt;)|(?=[^)]*$))</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.context.begin.idris</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>For things like '(Eq a, Show b) =&gt;' It begins with '(' either followed by ') =&gt;' on the same line, or anything but ')' until the end of line.</string>
+					<key>end</key>
+					<string>(\))\s*(=&gt;)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.context.end.idris</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.double-arrow.idris</string>
+						</dict>
+					</dict>
+					<key>name</key>
+					<string>meta.context-signature.idris</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>captures</key>
+							<dict>
+								<key>1</key>
+								<dict>
+									<key>name</key>
+									<string>entity.other.inherited-class.idris</string>
+								</dict>
+								<key>2</key>
+								<dict>
+									<key>name</key>
+									<string>entity.other.attribute-name.idris</string>
+								</dict>
+							</dict>
+							<key>match</key>
+							<string>([\w']+)\s+([\w']+)</string>
+							<key>name</key>
+							<string>meta.class-constraint.idris</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
@@ -729,6 +762,8 @@
 		</dict>
 		<key>prelude_class</key>
 		<dict>
+			<key>comment</key>
+			<string>These should be more or less all classes defined in Prelude (checked)</string>
 			<key>match</key>
 			<string>\b(Eq|Ord|Num|MinBound|MaxBound|Integral|Applicative|Alternative|Cast|Foldable|Functor|Monad|Traversable|Uninhabited|Semigroup|VerifiedSemigroup|Monoid|VerifiedMonoid|Group|VerifiedGroup|AbelianGroup|VerifiedAbelianGroup|Ring|VerifiedRing|RingWithUnity|VerifiedRingWithUnity|JoinSemilattice|VerifiedJoinSemilattice|MeetSemilattice|VerifiedMeetSemilattice|BoundedJoinSemilattice|VerifiedBoundedJoinSemilattice|BoundedMeetSemilattice|VerifiedBoundedMeetSemilattice|Lattice|VerifiedLattice|BoundedLattice|VerifiedBoundedLattice)\b</string>
 			<key>name</key>
@@ -758,9 +793,9 @@
 		<key>prelude_type</key>
 		<dict>
 			<key>comment</key>
-			<string>TODO review it</string>
+			<string>These should be more or less all types defined in Prelude and some synonyms (checked)</string>
 			<key>match</key>
-			<string>\b(Int(eger)?|Maybe|Either|Bool|Float|Double|Char|String|Ordering|ShowS|ReadS|FilePath|IO(Error)?|Type|Nat|Vect|List)\b</string>
+			<string>\b(Type|Exists|World|IO|IntTy|FTy|Foreign|File|Mode|Dec|Bool|so|Ordering|Either|Fin|IsJust|List|Maybe|Nat|LTE|GTE|GT|LT|Stream|StrM|Vect|Not|Lazy|Inf|FalseElim)\b</string>
 			<key>name</key>
 			<string>support.type.prelude.idris</string>
 		</dict>

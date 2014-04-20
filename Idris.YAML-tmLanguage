@@ -82,15 +82,16 @@ patterns:
   patterns:
   - include: '#prelude_class'
   - include: '#prelude_type'
-  # - include: '#context_signature'
+  - include: '#context_signature'
+  - include: '#type_signature'
 
 - name: meta.declaration.data.idris
   begin: \b(data)\s+([\w']+)\s*(:)?
   beginCaptures:
     '1': {name: keyword.other.idris}
     '2': {name: entity.name.type.idris}
+    # maybe this scope is more correct but it's highlighted the same way as a keyword:
     # '2': {name: storage.type.idris}
-    # '2': {name: variable.parameter.idris}
     '3': {name: keyword.operator.colon.idris}
   end: \b(where)\b|(=) 
   #|$
@@ -111,7 +112,7 @@ patterns:
   match: \b[A-Z][A-Za-z_'0-9]*
 
 - name: keyword.operator.idris
-  match: '[|!%$?~+:\-.=</>\\*]+'
+  match: '[|&!%$?~+:\-.=</>\\*]+'
 
 - name: punctuation.separator.comma.idris
   match: ','
@@ -121,24 +122,30 @@ patterns:
 repository:
 
   context_signature:
-    name: meta.context-signature.idris
-    comment: For things like '(Eq a, Show b) =>'
-      It begins with '(' either followed by ') =>' on the same line,
-      or anything but ')' until the end of line
-    begin: (\()((?=.*\)\s*=>)|(?=[^)]*$))
-    beginCaptures:
-      '1': {name: punctuation.context.begin.idris}
-    end: (\))\s*(=>)
-    endCaptures:
-      '1': {name: punctuation.context.end.idris}
-      '2': {name: keyword.operator.big-arrow.idris}
     patterns:
-    - include: '#prelude_class'
-    - name: meta.class-constraint.idris
-      match: ([\w']+)\s+([\w']+)
+    - name: meta.context-signature.idris
+      match: ([\w._']+)((\s+[\w_']+)+)\s*(=>)
       captures:
         '1': {name: entity.other.inherited-class.idris}
         '2': {name: entity.other.attribute-name.idris}
+        '4': {name: keyword.operator.double-arrow.idris}
+    - name: meta.context-signature.idris
+      comment: For things like '(Eq a, Show b) =>'
+        It begins with '(' either followed by ') =>' on the same line,
+        or anything but ')' until the end of line.
+      begin: (\()((?=.*\)\s*=>)|(?=[^)]*$))
+      beginCaptures:
+        '1': {name: punctuation.context.begin.idris}
+      end: (\))\s*(=>)
+      endCaptures:
+        '1': {name: punctuation.context.end.idris}
+        '2': {name: keyword.operator.double-arrow.idris}
+      patterns:
+      - name: meta.class-constraint.idris
+        match: ([\w']+)\s+([\w']+)
+        captures:
+          '1': {name: entity.other.inherited-class.idris}
+          '2': {name: entity.other.attribute-name.idris}
 
   parameter_type:
     comment: Parameter types in a type signature
@@ -221,10 +228,8 @@ repository:
   language_keyword:
     patterns:
     - name: keyword.other.idris
-      match: \b(infix[lr]?|let|where|of|with)\b
       comment: I'm not sure that these are all keywords, but don't know where to check it
-    # - name: keyword.operator.idris
-    #   match: \b()\b
+      match: \b(infix[lr]?|let|where|of|with)\b
     - name: keyword.control.idris
       match: \b(do|if|then|else|case|in)\b
 
@@ -238,11 +243,12 @@ repository:
   prelude_class:
     name: support.class.prelude.idris
     match: \b(Eq|Ord|Num|MinBound|MaxBound|Integral|Applicative|Alternative|Cast|Foldable|Functor|Monad|Traversable|Uninhabited|Semigroup|VerifiedSemigroup|Monoid|VerifiedMonoid|Group|VerifiedGroup|AbelianGroup|VerifiedAbelianGroup|Ring|VerifiedRing|RingWithUnity|VerifiedRingWithUnity|JoinSemilattice|VerifiedJoinSemilattice|MeetSemilattice|VerifiedMeetSemilattice|BoundedJoinSemilattice|VerifiedBoundedJoinSemilattice|BoundedMeetSemilattice|VerifiedBoundedMeetSemilattice|Lattice|VerifiedLattice|BoundedLattice|VerifiedBoundedLattice)\b
+    comment: These should be more or less all classes defined in Prelude (checked)
 
   prelude_type:
     name: support.type.prelude.idris
-    match: \b(Int(eger)?|Maybe|Either|Bool|Float|Double|Char|String|Ordering|ShowS|ReadS|FilePath|IO(Error)?|Type|Nat|Vect|List)\b
-    comment: TODO review it
+    match: \b(Type|Exists|World|IO|IntTy|FTy|Foreign|File|Mode|Dec|Bool|so|Ordering|Either|Fin|IsJust|List|Maybe|Nat|LTE|GTE|GT|LT|Stream|StrM|Vect|Not|Lazy|Inf|FalseElim)\b
+    comment: These should be more or less all types defined in Prelude and some synonyms (checked)
 
   prelude_function:
     name: support.function.prelude.idris
@@ -290,4 +296,4 @@ repository:
     - name: constant.character.escape.control.idris
       match: \^[A-Z@\[\]\\\^_]
 
-# TODO: namespace, parameters, using, %elim, %name, implicit
+# TODO: namespace, parameters, using, %elim, %name, implicit, symbol syntax ('foo)
