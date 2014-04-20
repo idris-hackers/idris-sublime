@@ -70,6 +70,7 @@ patterns:
     '1': {name: keyword.other.idris}
   patterns:
   - include: '#prelude_class'
+  - include: '#prelude_type'
 
 - name: meta.declaration.instance.idris
   begin: \b(instance)\b
@@ -79,19 +80,23 @@ patterns:
   endCaptures:
     '1': {name: keyword.other.idris}
   patterns:
-  # - include: '#context_signature'
   - include: '#prelude_class'
+  - include: '#prelude_type'
+  # - include: '#context_signature'
 
 - name: meta.declaration.data.idris
-  begin: \b(data)\s+([\w']+)\s*(:)
+  begin: \b(data)\s+([\w']+)\s*(:)?
   beginCaptures:
     '1': {name: keyword.other.idris}
-    # '2': {name: entity.name.type.idris}
-    '2': {name: storage.type.idris}
+    '2': {name: entity.name.type.idris}
+    # '2': {name: storage.type.idris}
+    # '2': {name: variable.parameter.idris}
     '3': {name: keyword.operator.colon.idris}
-  end: \b(where)\b|=|$
+  end: \b(where)\b|(=) 
+  #|$
   endCaptures:
     '1': {name: keyword.other.idris}
+    '2': {name: keyword.operator.idris}
   patterns:
   - include: '#type_signature'
 
@@ -100,6 +105,7 @@ patterns:
 - include: '#comments'
 - include: '#language_const'
 - include: '#language_keyword'
+- include: '#prelude'
 
 - name: constant.other.idris
   match: \b[A-Z][A-Za-z_'0-9]*
@@ -221,6 +227,13 @@ repository:
     #   match: \b()\b
     - name: keyword.control.idris
       match: \b(do|if|then|else|case|in)\b
+
+  prelude:
+    patterns:
+    - include: '#prelude_class'
+    - include: '#prelude_type'
+    - include: '#prelude_function'
+    - include: '#prelude_const'
 
   prelude_class:
     name: support.class.prelude.idris

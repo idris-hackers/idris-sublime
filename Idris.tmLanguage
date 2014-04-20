@@ -7,7 +7,7 @@
 		<string>idr</string>
 	</array>
 	<key>name</key>
-	<string>Idris-better</string>
+	<string>Idris</string>
 	<key>patterns</key>
 	<array>
 		<dict>
@@ -186,6 +186,10 @@
 					<key>include</key>
 					<string>#prelude_class</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#prelude_type</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -217,11 +221,15 @@
 					<key>include</key>
 					<string>#prelude_class</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#prelude_type</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>\b(data)\s+([\w']+)\s*(:)</string>
+			<string>\b(data)\s+([\w']+)\s*(:)?</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -232,7 +240,7 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>storage.type.idris</string>
+					<string>entity.name.type.idris</string>
 				</dict>
 				<key>3</key>
 				<dict>
@@ -241,13 +249,18 @@
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>\b(where)\b|=|$</string>
+			<string>\b(where)\b|(=)</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>1</key>
 				<dict>
 					<key>name</key>
 					<string>keyword.other.idris</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.idris</string>
 				</dict>
 			</dict>
 			<key>name</key>
@@ -279,6 +292,10 @@
 		<dict>
 			<key>include</key>
 			<string>#language_keyword</string>
+		</dict>
+		<dict>
+			<key>include</key>
+			<string>#prelude</string>
 		</dict>
 		<dict>
 			<key>match</key>
@@ -567,14 +584,6 @@
 			<string>The end patterm is a bit tricky. It's either ';' or something, at the end of the line, but not '-&gt;', because a type signature can be multiline. Though, it doesn't help, if you break the signature before arrows.</string>
 			<key>end</key>
 			<string>(;|(?&lt;=[^\s&gt;])\s*(?!-&gt;)\s*$)</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>END</string>
-				</dict>
-			</dict>
 			<key>name</key>
 			<string>meta.function.type-signature.idris</string>
 			<key>patterns</key>
@@ -693,6 +702,28 @@
 							<string>#prelude_type</string>
 						</dict>
 					</array>
+				</dict>
+			</array>
+		</dict>
+		<key>prelude</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#prelude_class</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#prelude_type</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#prelude_function</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#prelude_const</string>
 				</dict>
 			</array>
 		</dict>
