@@ -1,5 +1,5 @@
 # [PackageDev] target_format: plist, ext: tmLanguage
-name: Idris-better
+name: Idris
 scopeName: source.idris
 fileTypes: [idr]
 uuid: 8957eeb1-b492-4497-85b8-b86e511e87eb
@@ -172,8 +172,8 @@ repository:
       '3': {name: entity.name.function.idris}
       '4': {name: keyword.operator.colon.idris}
     end: (;|(?<=[^\s>])\s*(?!->)\s*$)
-    endCaptures:
-      '0': {name: END}
+    # endCaptures:
+    #   '0': {name: END}
     patterns:
     - include: '#type_signature'
     comment: The end patterm is a bit tricky. It's either ';' or something, at the end of the line, 
