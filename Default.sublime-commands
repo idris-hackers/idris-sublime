@@ -1,0 +1,24 @@
+[
+    {
+        "caption": "Idris: Run REPL command...",
+        "command": "run_idris_command", "args": { "editing": false }
+    },{
+        "caption": "Idris: Run editing command...",
+        "command": "run_idris_command"
+    },{
+        "caption": "Idris: Add clause",
+        "command": "run_idris_command", "args": { "cmd": ":addclause!" }
+    },{
+        "caption": "Idris: Case split",
+        "command": "run_idris_command", "args": { "cmd": ":casesplit!" }
+    },{
+        "caption": "Idris: Add missing clause",
+        "command": "run_idris_command", "args": { "cmd": ":addmissing!" }
+    },{
+        "caption": "Idris: Proof search",
+        "command": "run_idris_command", "args": { "cmd": ":proofsearch!" }
+    },{
+        "caption": "Idris: Make with pattern",
+        "command": "run_idris_command", "args": { "cmd": ":makewith!" }
+    }
+]
