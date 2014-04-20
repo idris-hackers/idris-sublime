@@ -13,3 +13,11 @@
     - `Idris: Add missing clause` (`:addmissing!` for current symbol)
     - `Idris: Proof search` (`:proofsearch!` for current symbol)
     - `Idris: Make with pattern` (`:makewith!` for current symbol)
+
+### TODO list
+
+- Keybindings
+- Launch repl server automatically
+- Syntax definition for the literate source format
+- Possibly some integration with [SublimeREPL](https://github.com/wuub/SublimeREPL) (idris support is [almost there](https://github.com/wuub/SublimeREPL/pull/354)) + [LoadFileTpRepl](https://github.com/laughedelic/LoadFileToRepl) (idris is already there)
+- _Maybe_ some business with `idris --ideslave` if I will have time...
