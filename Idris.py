@@ -17,7 +17,7 @@ class RunIdrisCommandCommand(sublime_plugin.TextCommand):
 
         def idris_cmd(cmd, l, n):
             args = [str(l), n] if editing else []
-            return (["idris", "--client", cmd] + args)
+            return (["idris", "--client", " ".join([cmd] + args)])
 
         def run_cmd(cmd):
             env = os.environ
