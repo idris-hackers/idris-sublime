@@ -15,17 +15,12 @@
     - `Idris: Make with pattern` (`:makewith!` for current symbol)
 
 
-### Project status
-
-I'm not using Sublime Text currently, so I'm not going to maintain this plugin. Although it can be still useful, mainly because of the improved syntax highlighting. If somebody wants to maintain it, please write me in an issue.
-
-
 ### TODO list
 
-Things that would be nice to have.
+Things that would be nice to have:
 
 - Optional keybindings
 - Launch REPL server automatically
 - Syntax definition for the literate source format
 - Possibly some integration with [SublimeREPL](https://github.com/wuub/SublimeREPL) (idris support is [almost there](https://github.com/wuub/SublimeREPL/pull/354)) + [LoadFileTpRepl](https://github.com/laughedelic/LoadFileToRepl) (idris is already there)
-- Proper interaction with the `idris --ideslave` mode.
+- Proper interaction with the `idris --ideslave` mode
