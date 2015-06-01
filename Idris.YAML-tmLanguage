@@ -1,0 +1,299 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+name: Idris
+scopeName: source.idris
+fileTypes: [idr]
+uuid: 8957eeb1-b492-4497-85b8-b86e511e87eb
+
+patterns:
+- comment: Infix function application
+  name: keyword.operator.function.infix.idris
+  match: (`)[\w']*?(`)
+  captures:
+    '1': {name: punctuation.definition.entity.idris}
+    '2': {name: punctuation.definition.entity.idris}
+
+- name: meta.declaration.module.idris
+  match: ^(module)\s+([a-zA-Z._']+)$
+  captures:
+    '1': {name: keyword.other.idris}
+    # '2': {name: support.other.module.idris}
+
+- name: meta.import.idris
+  match: ^(import)\s+([a-zA-Z._']+)$
+  captures:
+    '1': {name: keyword.other.idris}
+    # '2': {name: support.other.module.idris}
+
+- name: constant.numeric.float.idris
+  match: \b([0-9]+\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+)\b
+
+- name: constant.numeric.idris
+  match: \b([0-9]+|0([xX][0-9a-fA-F]+|[oO][0-7]+))\b
+
+- name: storage.modifier.export.idris
+  match: ^\b(public|abstract|private)\b
+
+- name: storage.modifier.totality.idris
+  match: \b(total|partial)\b
+
+- name: storage.modifier.idris
+  match: ^\b(implicit)\b
+
+- name: string.quoted.double.idris
+  begin: \"
+  beginCaptures:
+    '0': {name: punctuation.definition.string.begin.idris}
+  end: \"
+  endCaptures:
+    '0': {name: punctuation.definition.string.end.idris}
+  patterns:
+  - include: '#escape_characters'
+
+- name: string.quoted.single.idris
+  begin: (?<!\w)\'
+  beginCaptures:
+    '0': {name: punctuation.definition.string.begin.idris}
+  end: \'
+  endCaptures:
+    '0': {name: punctuation.definition.string.end.idris}
+  patterns:
+  - include: '#escape_characters'
+  - name: invalid.illegal.idris
+    match: \n
+
+- name: meta.declaration.class.idris
+  begin: \b(class)\b
+  beginCaptures:
+    '1': {name: keyword.other.idris}
+  end: \b(where)\b|$
+  endCaptures:
+    '1': {name: keyword.other.idris}
+  patterns:
+  - include: '#prelude_class'
+  - include: '#prelude_type'
+
+- name: meta.declaration.instance.idris
+  begin: \b(instance)\b
+  beginCaptures:
+    '1': {name: keyword.other.idris}
+  end: \b(where)\b|$
+  endCaptures:
+    '1': {name: keyword.other.idris}
+  patterns:
+  - include: '#prelude_class'
+  - include: '#prelude_type'
+  - include: '#context_signature'
+  - include: '#type_signature'
+
+- name: meta.declaration.data.idris
+  begin: \b(data)\s+([\w']+)\s*(:)?
+  beginCaptures:
+    '1': {name: keyword.other.idris}
+    '2': {name: entity.name.type.idris}
+    # maybe this scope is more correct but it's highlighted the same way as a keyword:
+    # '2': {name: storage.type.idris}
+    '3': {name: keyword.operator.colon.idris}
+  end: \b(where)\b|(=) 
+  #|$
+  endCaptures:
+    '1': {name: keyword.other.idris}
+    '2': {name: keyword.operator.idris}
+  patterns:
+  - include: '#type_signature'
+
+- include: '#function_signature'
+- include: '#directive'
+- include: '#comments'
+- include: '#language_const'
+- include: '#language_keyword'
+- include: '#prelude'
+
+- name: constant.other.idris
+  match: \b[A-Z][A-Za-z_'0-9]*
+
+- name: keyword.operator.idris
+  match: '[|&!%$?~+:\-.=</>\\*]+'
+
+- name: punctuation.separator.comma.idris
+  match: ','
+
+
+
+repository:
+
+  context_signature:
+    patterns:
+    - name: meta.context-signature.idris
+      match: ([\w._']+)((\s+[\w_']+)+)\s*(=>)
+      captures:
+        '1': {name: entity.other.inherited-class.idris}
+        '2': {name: entity.other.attribute-name.idris}
+        '4': {name: keyword.operator.double-arrow.idris}
+    - name: meta.context-signature.idris
+      comment: For things like '(Eq a, Show b) =>'
+        It begins with '(' either followed by ') =>' on the same line,
+        or anything but ')' until the end of line.
+      begin: (\()((?=.*\)\s*=>)|(?=[^)]*$))
+      beginCaptures:
+        '1': {name: punctuation.context.begin.idris}
+      end: (\))\s*(=>)
+      endCaptures:
+        '1': {name: punctuation.context.end.idris}
+        '2': {name: keyword.operator.double-arrow.idris}
+      patterns:
+      - name: meta.class-constraint.idris
+        match: ([\w']+)\s+([\w']+)
+        captures:
+          '1': {name: entity.other.inherited-class.idris}
+          '2': {name: entity.other.attribute-name.idris}
+
+  parameter_type:
+    comment: Parameter types in a type signature
+    patterns:
+    - include: '#prelude_type'
+    - name: meta.parameter.named.idris
+      comment: '(x : Nat)'
+      begin: \(([\w']+)\s*:(?!:)
+      beginCaptures:
+        '1': {name: entity.name.tag.idris}
+      end: \)
+      patterns:
+      - include: '#prelude_type'
+    - name: meta.parameter.implicit.idris
+      comment: '{auto p : a = b}'
+      begin: \{((auto|default .+)\s+)?([\w']+)\s*:(?!:)
+      beginCaptures:
+        '1': {name: storage.modifier.idris}
+        '3': {name: entity.name.tag.idris}
+      end: \}
+      patterns:
+      - include: '#prelude_type'
+
+  type_signature:
+    patterns:
+    - include: '#context_signature'
+    - include: '#parameter_type'
+    - include: '#language_const'
+    - name: keyword.operator.arrow.idris
+      match: ->
+
+  function_signature:
+    name: meta.function.type-signature.idris
+    begin: (([\w']+)|\(([|!%$+\-.,=</>:]+)\))\s*(:)(?!:)
+    beginCaptures:
+      '2': {name: entity.name.function.idris}
+      '3': {name: entity.name.function.idris}
+      '4': {name: keyword.operator.colon.idris}
+    end: (;|(?<=[^\s>])\s*(?!->)\s*$)
+    # endCaptures:
+    #   '0': {name: END}
+    patterns:
+    - include: '#type_signature'
+    comment: The end patterm is a bit tricky. It's either ';' or something, at the end of the line, 
+      but not '->', because a type signature can be multiline. Though, it doesn't help, if you 
+      break the signature before arrows.
+
+  block_comment:
+    name: comment.block.idris
+    begin: \{-(?!#)
+    end: -\}
+    captures:
+      '0': {name: punctuation.definition.comment.idris}
+    patterns:
+    - include: '#block_comment'
+
+  comments:
+    patterns:
+    - name: comment.line.double-dash.idris
+      match: (--).*$\n?
+      captures:
+        '1': {name: punctuation.definition.comment.idris}
+    - name: comment.line.triple-bar.idris
+      match: (\|\|\|).*$\n?
+      captures:
+        '1': {name: punctuation.definition.comment.idris}
+    - include: '#block_comment'
+
+  language_const:
+    patterns:
+    - name: constant.language.unit.idris
+      match: \(\)
+    # - name: constant.language.empty-list.idris
+    #   match: \[\]
+    - name: constant.language.bottom.idris
+      match: _\|_
+    - name: constant.language.underscore.idris
+      match: \b_\b
+
+  language_keyword:
+    patterns:
+    - name: keyword.other.idris
+      comment: I'm not sure that these are all keywords, but don't know where to check it
+      match: \b(infix[lr]?|let|where|of|with)\b
+    - name: keyword.control.idris
+      match: \b(do|if|then|else|case|in)\b
+
+  prelude:
+    patterns:
+    - include: '#prelude_class'
+    - include: '#prelude_type'
+    - include: '#prelude_function'
+    - include: '#prelude_const'
+
+  prelude_class:
+    name: support.class.prelude.idris
+    match: \b(Eq|Ord|Num|MinBound|MaxBound|Integral|Applicative|Alternative|Cast|Foldable|Functor|Monad|Traversable|Uninhabited|Semigroup|VerifiedSemigroup|Monoid|VerifiedMonoid|Group|VerifiedGroup|AbelianGroup|VerifiedAbelianGroup|Ring|VerifiedRing|RingWithUnity|VerifiedRingWithUnity|JoinSemilattice|VerifiedJoinSemilattice|MeetSemilattice|VerifiedMeetSemilattice|BoundedJoinSemilattice|VerifiedBoundedJoinSemilattice|BoundedMeetSemilattice|VerifiedBoundedMeetSemilattice|Lattice|VerifiedLattice|BoundedLattice|VerifiedBoundedLattice)\b
+    comment: These should be more or less all classes defined in Prelude (checked)
+
+  prelude_type:
+    name: support.type.prelude.idris
+    match: \b(Type|Exists|World|IO|IntTy|FTy|Foreign|File|Mode|Dec|Bool|so|Ordering|Either|Fin|IsJust|List|Maybe|Nat|LTE|GTE|GT|LT|Stream|StrM|Vect|Not|Lazy|Inf|FalseElim)\b
+    comment: These should be more or less all types defined in Prelude and some synonyms (checked)
+
+  prelude_function:
+    name: support.function.prelude.idris
+    match: \b(abs|acos|acosh|all|and|any|appendFile|applyM|asTypeOf|asin|asinh|atan|atan2|atanh|break|catch|ceiling|compare|concat|concatMap|const|cos|cosh|curry|cycle|decodeFloat|div|divMod|drop|dropWhile|elem|encodeFloat|enumFrom|enumFromThen|enumFromThenTo|enumFromTo|error|even|exp|exponent|fail|filter|flip|floatDigits|floatRadix|floatRange|floor|fmap|foldl|foldl1|foldr|foldr1|fromEnum|fromInteger|fromIntegral|fromRational|fst|gcd|getChar|getContents|getLine|head|id|init|interact|ioError|isDenormalized|isIEEE|isInfinite|isNaN|isNegativeZero|iterate|last|lcm|length|lex|lines|log|logBase|lookup|map|mapM|mapM_|max|maxBound|maximum|maybe|min|minBound|minimum|mod|negate|not|notElem|null|odd|or|otherwise|pi|pred|print|product|properFraction|putChar|putStr|putStrLn|quot|quotRem|read|readFile|readIO|readList|readLn|readParen|reads|readsPrec|realToFrac|recip|rem|repeat|replicate|return|reverse|round|scaleFloat|scanl|scanl1|scanr|scanr1|seq|sequence|sequence_|show|showChar|showList|showParen|showString|shows|showsPrec|significand|signum|sin|sinh|snd|span|splitAt|sqrt|subtract|succ|sum|tail|take|takeWhile|tan|tanh|toEnum|toInteger|toRational|truncate|uncurry|undefined|unlines|until|unwords|unzip|unzip3|userError|words|writeFile|zip|zip3|zipWith|zipWith3)\b
+    comment: TODO review it; these are just Haskell prelude functions
+
+  prelude_const:
+    patterns:
+    - name: support.constant.prelude.idris
+      match: \b(Just|Nothing|Left|Right|True|False|LT|EQ|GT)\b
+
+  directive:
+    patterns:
+    - name: meta.directive.language-extension.idris
+      match: ^%(language)\s+(.*)$
+      captures:
+        '1': {name: keyword.other.directive.idris}
+        '2': {name: keyword.other.language-extension.idris}
+    - name: meta.directive.totality.idris
+      match: ^%(default)\s+(total|partial)$
+      captures:
+        '1': {name: keyword.other.directive.idris}
+        '2': {name: keyword.other.totality.idris}
+    - name: meta.directive.type-provider.idris
+      match: ^%(provide)\s+.*\s+(with)\s+.*$
+      captures:
+        '1': {name: keyword.other.directive.idris}
+        '2': {name: keyword.other.idris}
+    - name: meta.directive.export.idris
+      match: ^%(access)\s+(public|abstract|private)$
+      captures:
+        '1': {name: keyword.other.directive.idris}
+        '2': {name: storage.modifier.export.idris}
+    - name: meta.directive.idris
+      match: ^%([\w]+)\b
+      captures:
+        '1': {name: keyword.other.directive.idris}
+
+  escape_characters:
+    patterns: 
+    - name: constant.character.escape.ascii.idris
+      match: \\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"'\&])
+    - name: constant.character.escape.octal.idris
+      match: \\o[0-7]+|\\x[0-9A-Fa-f]+|\\[0-9]+
+    - name: constant.character.escape.control.idris
+      match: \^[A-Z@\[\]\\\^_]
+
+# TODO: namespace, parameters, using, %elim, %name, implicit, symbol syntax ('foo)
