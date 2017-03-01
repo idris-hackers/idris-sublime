@@ -14,6 +14,13 @@
     - `Idris: Proof search` (`:proofsearch!` for current symbol)
     - `Idris: Make with pattern` (`:makewith!` for current symbol)
 
+## Installation (with Sublime Package Control)
+
+1. Add this repository to Sublime Package Control. To do this, open up the command pallete with `Ctrl/Cmd + P`, start typing "repository" and choose the option "Package Control: Add Repository" when it comes up. Then paste the url (https://github.com/idris-hackers/idris-sublime) into the field at the bottom and press enter.
+
+2. Install the package. To do this, open the command pallete again, select "Package Control: Install Package", and choose `idris-sublime`.
+
+3. Re-open any `.idr` source files, and they will now be recognized as Idris source files.
 
 ### TODO list
 
