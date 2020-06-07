@@ -1,48 +1,67 @@
 [
     {
         "caption": "Idris: Show type",
+        "keys": ["super+`"],
+        "command": "run_idris_command", "args": { "cmd": ":t" },
+    },{
+        "caption": "Idris: Show type",
+        "keys": ["super+ctrl+t"],
         "command": "run_idris_command", "args": { "cmd": ":t" },
     },{
         "caption": "Idris: Reload",
+        "keys": ["super+ctrl+r"],
         "command": "run_idris_command", "args": { "cmd": "" }
     },{
         "caption": "Idris: Case split",
+        "keys": ["super+ctrl+c"],
         "command": "run_idris_command", "args": { "cmd": ":cs!" }
     },{
         "caption": "Idris: Add clause",
+        "keys": ["super+ctrl+v"],
         "command": "run_idris_command", "args": { "cmd": ":ac!" }
     },{
         "caption": "Idris: Add clause (pattern-matching proof)",
+        "keys": ["super+ctrl+j"],
         "command": "run_idris_command", "args": { "cmd": ":apc!" }
     },{
         "caption": "Idris: Add missing clauses",
+        "keys": ["super+ctrl+m"],
         "command": "run_idris_command", "args": { "cmd": ":am!" }
     },{
         "caption": "Idris: Refine item",
+        "keys": ["super+ctrl+y"],
         "command": "run_idris_command", "args": { "cmd": ":ref!", "inputExpr": "Refine item" }
     },{
         "caption": "Idris: Proof search",
+        "keys": ["super+ctrl+s"],
         "command": "run_idris_command", "args": { "cmd": ":ps!" }
     },{
         "caption": "Idris: Proof search with hints",
+        "keys": ["super+ctrl+o"],
         "command": "run_idris_command", "args": { "cmd": ":ps!", "inputExpr": "Proof search hints" }
     },{
         "caption": "Idris: Generate definition",
+        "keys": ["super+ctrl+a"],
         "command": "run_idris_command", "args": { "cmd": ":gd!" }
     },{
         "caption": "Idris: Make lemma",
+        "keys": ["super+ctrl+l"],
         "command": "run_idris_command", "args": { "cmd": ":ml!" },
     },{
         "caption": "Idris: Evaluate expression",
+        "keys": ["super+ctrl+e"],
         "command": "run_idris_command", "args": { "cmd": "", "evalExpr": true }
     },{
         "caption": "Idris: Make with pattern",
+        "keys": ["super+ctrl+w"],
         "command": "run_idris_command", "args": { "cmd": ":mw!" }
     },{
         "caption": "Idris: Make case",
+        "keys": ["super+ctrl+n"],
         "command": "run_idris_command", "args": { "cmd": ":mc!" }
     },{
         "caption": "Idris: Documentation",
+        "keys": ["super+ctrl+h"],
         "command": "run_idris_command", "args": { "cmd": ":doc" }
     }
 ]
