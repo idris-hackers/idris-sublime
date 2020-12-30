@@ -41,7 +41,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>^(module)\s+([a-zA-Z._']+)$</string>
+			<string>^(module)\s+([a-zA-Z0-9._']+)$</string>
 			<key>name</key>
 			<string>meta.declaration.module.idris</string>
 		</dict>
@@ -55,7 +55,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>^(import)\s+([a-zA-Z._']+)$</string>
+			<string>^(import)\s+([a-zA-Z0-9._']+)$</string>
 			<key>name</key>
 			<string>meta.import.idris</string>
 		</dict>
